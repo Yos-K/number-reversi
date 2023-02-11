@@ -1,28 +1,33 @@
-name: Publish gh pages
+name: Deploy
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-    
+
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    # configure the environment
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
     - uses: actions/checkout@v2
     - run: rustup target add wasm32-unknown-unknown
     - run: cargo install trunk
     - run: trunk build --release --public-url number-reversi
-
-    # deploy for github.io
-    - name: GitHub Pages action
-      uses: peaceiris/actions-gh-pages@v3.7.3
+    - run: cp -r ./dist/ ./public/
+    - uses: peaceiris/actions-gh-pages@v3
+      if: ${{ github.ref == 'refs/heads/main' }}
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
+        publish_dir: ./public
