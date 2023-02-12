@@ -14,8 +14,9 @@ jobs:
     - run: cargo install trunk
     # 「yew-static-pages」は実際のリポジトリ名に変更
     - run: trunk build --release --public-url number-reversi
-    - run: cp -r ./dist/ ./public/
+    - run: cp -r ./dist ./public
     - run: pwd
+    - run: ls ./public
     - uses: peaceiris/actions-gh-pages@v3
       if: ${{ github.ref == 'refs/heads/main' }}
       with:
