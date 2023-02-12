@@ -10,13 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: cargo install wasm-pack
-    - run: wasm-pack build --release --target web --out-name wasm --out-dir ./public
-    - run: cp ./dist/index.html ./public
-    - run: ls ./dist
-    - run: ls ./public
-    - run: rm -rf ./public/.gitignore
-
+    - run: rustup target add wasm32-unknown-unknown
+    - run: cargo install trunk
+    # 「yew-static-pages」は実際のリポジトリ名に変更
+    - run: trunk build --release --public-url number-reversi
+    - run: cp -r ./dist/ ./public/
     - uses: peaceiris/actions-gh-pages@v3
       if: ${{ github.ref == 'refs/heads/main' }}
       with:
