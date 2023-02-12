@@ -13,10 +13,20 @@ jobs:
     - run: rustup target add wasm32-unknown-unknown
     - run: cargo install trunk
     - run: trunk build --release --public-url number-reversi
-    - uses: peaceiris/actions-gh-pages@v3
-      if: ${{ github.ref == 'refs/heads/main' }}
+    - uses: actions/upload-pages-artifact@v1
       with:
-        publish_branch: gh-pages
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./
-        destination_dir: ./
+        path: ./dist
+        
+  deploy:
+     needs: build
+     permissions:
+       pages: write
+       id-token: write
+     environment:
+       name: github-pages
+       url: ${{ steps.deployment.outputs.page_url }}
+     runs-on: ubuntu-latest
+     steps:
+       - name: Deploy to GitHub Pages
+         id: deployment
+         uses: actions/deploy-pages@v1
