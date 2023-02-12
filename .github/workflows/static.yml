@@ -13,6 +13,8 @@ jobs:
     - run: cargo install wasm-pack
     - run: wasm-pack build --release --target web --out-name wasm --out-dir ./public
     - run: cp ./dist/index.html ./public
+    - run: ls ./dist
+    - run: ls ./public
     - run: rm -rf ./public/.gitignore
 
     - uses: peaceiris/actions-gh-pages@v3
