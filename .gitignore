@@ -1,4 +1,5 @@
 /target
 /debug
+/dist
 
 Cargo.lock
