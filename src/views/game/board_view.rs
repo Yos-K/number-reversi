@@ -61,7 +61,7 @@ impl Component for BoardView {
                 }
 
                 match ctx.props().squares[i][j] {
-                    Square::Putted(piece) => {
+                    Square::Put(piece) => {
                         let x = (i as f64) * square_size + square_size / 2.0;
                         let y = (j as f64) * square_size + square_size / 2.0;
                         match piece.color {

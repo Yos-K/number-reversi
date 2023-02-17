@@ -21,12 +21,12 @@ pub fn reverse(board: Board, piece: Piece, candidates: Vec<ReversibleCandidates>
     let mut squares = board.squares.clone();
 
     for c in candidates.into_iter() {
-        if let Square::Putted(opposite) = board.squares[c.opposite.x][c.opposite.y] {
+        if let Square::Put(opposite) = board.squares[c.opposite.x][c.opposite.y] {
             let some_of_both_ends = piece.value + opposite.value;
             for p in c.positions.into_iter() {
-                if let Square::Putted(r) = board.squares[p.x][p.y] {
+                if let Square::Put(r) = board.squares[p.x][p.y] {
                     if r.value < some_of_both_ends {
-                        squares[p.x][p.y] = Square::Putted(r.reverse());
+                        squares[p.x][p.y] = Square::Put(r.reverse());
                     }
                 }
             }
@@ -53,6 +53,6 @@ mod reverse_test {
                 positions: vec![Position{x: 4, y: 3}]}];
         let board = board.put_piece(position, piece);
         let board = reverse(board, piece, candidates);
-        assert_eq!(board.squares[4][3], Square::Putted(Piece::new(Color::Black, 1)));
+        assert_eq!(board.squares[4][3], Square::Put(Piece::new(Color::Black, 1)));
     }
 }

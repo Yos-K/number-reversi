@@ -18,7 +18,7 @@
 //! # Methods
 //! 
 //! * `set_initial_state` - returns a new `Board` instance with the initial state of the game
-//! * `is_putted` - returns a boolean indicating whether the piece is put at the specified `Position`
+//! * `is_put` - returns a boolean indicating whether the piece is put at the specified `Position`
 //! * `put_piece` - returns a new `Board` instance with the piece put at the specified `Position`
 //! * `get_squares` - returns a copy of all `Square`s in the board
 //! * `get_score` - returns the `Score` of black and white pieces
@@ -54,10 +54,10 @@ impl Board {
         let mut board = Self {
             squares: vec![vec![Square::Empty; 8]; 8]
         };
-        board.squares[3][3] = Square::Putted(Piece::new(Color::Black, 1));
-        board.squares[4][4] = Square::Putted(Piece::new(Color::Black, 1));
-        board.squares[3][4] = Square::Putted(Piece::new(Color::White, 1));
-        board.squares[4][3] = Square::Putted(Piece::new(Color::White, 1));
+        board.squares[3][3] = Square::Put(Piece::new(Color::Black, 1));
+        board.squares[4][4] = Square::Put(Piece::new(Color::Black, 1));
+        board.squares[3][4] = Square::Put(Piece::new(Color::White, 1));
+        board.squares[4][3] = Square::Put(Piece::new(Color::White, 1));
         board
     }
 
@@ -76,11 +76,11 @@ impl Board {
     /// let board = Board::set_initial_state();
     /// let position = Position{x: 3, y: 3};
     ///
-    /// assert!(board.is_putted(position));
+    /// assert!(board.is_put(position));
     /// ```
-    pub fn is_putted(&self, position: Position) -> bool {
+    pub fn is_put(&self, position: Position) -> bool {
         match self.squares[position.x][position.y] {
-            Square::Putted(_) => true,
+            Square::Put(_) => true,
             _ => false,
         }
     }
@@ -110,7 +110,7 @@ impl Board {
         let mut board = Self {
             squares
         };
-        board.squares[position.x][position.y] = Square::Putted(piece);
+        board.squares[position.x][position.y] = Square::Put(piece);
         board
     }
 
@@ -135,7 +135,7 @@ impl Board {
         .flatten()
         .filter_map(|x| {
             match x {
-                Square::Putted(p) if p.color == color => Some(p.value),
+                Square::Put(p) if p.color == color => Some(p.value),
                 _ => None,
             }
         })
@@ -193,21 +193,21 @@ mod tests {
     fn test_set_initial_state() {
         let board = Board::set_initial_state();
         
-        assert_eq!(board.squares[3][3], Square::Putted(Piece::new(Color::Black, 1)));
-        assert_eq!(board.squares[4][4], Square::Putted(Piece::new(Color::Black, 1)));
-        assert_eq!(board.squares[3][4], Square::Putted(Piece::new(Color::White, 1)));
-        assert_eq!(board.squares[4][3], Square::Putted(Piece::new(Color::White, 1)));
+        assert_eq!(board.squares[3][3], Square::Put(Piece::new(Color::Black, 1)));
+        assert_eq!(board.squares[4][4], Square::Put(Piece::new(Color::Black, 1)));
+        assert_eq!(board.squares[3][4], Square::Put(Piece::new(Color::White, 1)));
+        assert_eq!(board.squares[4][3], Square::Put(Piece::new(Color::White, 1)));
     }
 
     #[test]
-    fn is_putted_test() {
+    fn is_put_test() {
         let board = Board::set_initial_state();
         
-        assert!(board.is_putted(Position {x: 3, y: 3}));
-        assert!(board.is_putted(Position {x: 4, y: 4}));
-        assert!(board.is_putted(Position {x: 3, y: 4}));
-        assert!(board.is_putted(Position {x: 4, y: 3}));
-        assert_eq!(board.is_putted(Position {x: 0, y: 0}), false);
+        assert!(board.is_put(Position {x: 3, y: 3}));
+        assert!(board.is_put(Position {x: 4, y: 4}));
+        assert!(board.is_put(Position {x: 3, y: 4}));
+        assert!(board.is_put(Position {x: 4, y: 3}));
+        assert_eq!(board.is_put(Position {x: 0, y: 0}), false);
     }
 
     #[test]
@@ -216,7 +216,7 @@ mod tests {
         let piece = Piece::new(Color::Black, 1);
         
         let new_board = board.put_piece(Position {x: 0, y: 0}, piece.clone());
-        assert_eq!(new_board.squares[0][0], Square::Putted(piece));
+        assert_eq!(new_board.squares[0][0], Square::Put(piece));
     }
 
     #[test]

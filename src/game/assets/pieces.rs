@@ -177,9 +177,9 @@ mod pieces_test {
         };
         #[test]
         fn when_put_a_piece_black1_then_num_of_piece_black1_is_4() {
-            let putted_piece = Piece::new(Color::Black, 1);
+            let put_piece = Piece::new(Color::Black, 1);
             let pieces = Pieces::make_pieces();
-            let pieces = pieces.remove(&putted_piece);
+            let pieces = pieces.remove(&put_piece);
             assert_eq!(pieces.black.get(&1), Some(&4));
         }
     }
@@ -193,10 +193,10 @@ mod pieces_test {
         };
         #[test]
         fn when_white_passed_then_black_max_piece_increase() {
-            let putted_piece = Piece::new(Color::Black, 1);
+            let put_piece = Piece::new(Color::Black, 1);
             let pieces = Pieces::make_pieces();
-            let pieces = pieces.remove(&putted_piece);
-            let pieces = pieces.add(&putted_piece);
+            let pieces = pieces.remove(&put_piece);
+            let pieces = pieces.add(&put_piece);
             assert_eq!(pieces.black.get(&1), Some(&5));
         }
     }

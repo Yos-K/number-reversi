@@ -97,7 +97,7 @@ mod tests {
 
         assert_eq!(
             new_board.squares[position.x][position.y], 
-            Square::Putted(piece)
+            Square::Put(piece)
         );
         assert_eq!(new_turn.color, Color::White);
         assert_eq!(new_pieces.black.get(&1), Some(&4));

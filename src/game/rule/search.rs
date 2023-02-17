@@ -25,7 +25,7 @@ pub fn search(board: &Board, position: Position, turn: Turn, direction: (isize, 
         None => vec![],
     };
     
-    if board.is_putted(position) {
+    if board.is_put(position) {
         if result.len() == 0 {
             return vec![];
         }
@@ -38,7 +38,7 @@ pub fn search(board: &Board, position: Position, turn: Turn, direction: (isize, 
 
     let next = Position{x: next.0 as usize, y: next.1 as usize};
     match board.squares[next.x][next.y] {
-        Square::Putted(p) => {
+        Square::Put(p) => {
             if p.color == turn.color {
                 if result.len() == 0 {
                     vec![]

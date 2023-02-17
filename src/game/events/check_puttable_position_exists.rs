@@ -74,7 +74,7 @@ pub fn check_puttable_position_exists(board: Board, turn: Turn) -> Board {
         (0..8).map(move |j| (i, j))
     ).for_each(|(i, j)| {
         match new_board.squares[i][j] {
-            Square::Putted(_) => {},
+            Square::Put(_) => {},
             _ => {
                 let position = Position{x: i, y: j};
                 let candidates = 
