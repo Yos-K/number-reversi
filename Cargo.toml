@@ -18,6 +18,8 @@ log = "0.4.6"
 wasm-logger = "0.2.0"
 yew-canvas = "0.2.4"
 js-sys = "0.3"
+rand = "0.8"
+getrandom = { version = "0.2", features = ["js"] }
 
 [dependencies.web-sys]
 version = "0.3.60"

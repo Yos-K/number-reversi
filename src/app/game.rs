@@ -27,7 +27,7 @@ pub struct GameModeProps{
 
 #[function_component]
 pub fn Game(props: &GameModeProps) -> Html {
-    let turn = use_state(|| Turn{color: Color::Black});
+    let turn = use_state(|| Turn{color: Color::Black, player: props.black});
     let pieces = use_state(|| Pieces::make_pieces());
     let piece = use_state(|| Piece::new(turn.color, 1));
     let used_pieces = use_state(|| UsedPiece::new());
@@ -37,6 +37,25 @@ pub fn Game(props: &GameModeProps) -> Html {
 
     let score = board.get_score();
 
+    if (*turn).player == Player::Com{
+        log::info!("com's turn");
+        let pos = board.get_puttable_position();
+        let selected_piece = pieces.select_piece(*turn);
+
+        let squares = board.get_squares();
+        let tmp_board = Board{squares};
+
+        let (new_board, next_turn, new_pieces, new_piece, new_used_pieces) = 
+            put_piece(pos, selected_piece, tmp_board, *turn, (*pieces).clone(), (*used_pieces).clone(), *props);
+        let current_rest_num = new_pieces.get_rest_num(new_piece.value, next_turn);
+        rest_num.set(current_rest_num);
+        turn.set(next_turn);
+        board.set(new_board);
+        piece.set(new_piece);
+        pieces.set(new_pieces);
+        used_pieces.set(new_used_pieces);
+    };
+
     let on_decrement = {
         let piece = piece.clone();
         let rest_num = rest_num.clone();
@@ -44,11 +63,9 @@ pub fn Game(props: &GameModeProps) -> Html {
         let turn = turn.clone();
 
         Callback::from(move |current_piece| {
-            log::info!("{:?}", current_piece);
             piece.set(current_piece);
             let current_rest_num = pieces.get_rest_num(current_piece.value, *turn);
             rest_num.set(current_rest_num);
-            log::info!("{:?}", current_rest_num);
         })
     };
 
@@ -59,13 +76,12 @@ pub fn Game(props: &GameModeProps) -> Html {
         let turn = turn.clone();
 
         Callback::from(move |current_piece| {
-            log::info!("{:?}", current_piece);
             piece.set(current_piece);
             let current_rest_num = pieces.get_rest_num(current_piece.value, *turn);
             rest_num.set(current_rest_num);
-            log::info!("{:?}", current_rest_num);
         })
     };
+    
 
     let on_put = {
         let position = position.clone();
@@ -75,24 +91,31 @@ pub fn Game(props: &GameModeProps) -> Html {
         let pieces = pieces.clone();
         let rest_num = rest_num.clone();
         let used_pieces = used_pieces.clone();
+        let game_mode_props = props.clone();
 
-        Callback::from(move |current_position| {
-            position.set(current_position);
-            log::info!("{:?}", current_position);
-            let squares = board.get_squares();
-            let tmp_board = Board{squares};
-            if *rest_num > 0 {
-                let (new_board, next_turn, new_pieces, new_piece, new_used_pieces) = 
-                    put_piece(current_position, *piece, tmp_board, *turn, (*pieces).clone(), (*used_pieces).clone());
-                let current_rest_num = new_pieces.get_rest_num(new_piece.value, next_turn);
-                rest_num.set(current_rest_num);
-                turn.set(next_turn);
-                board.set(new_board);
-                piece.set(new_piece);
-                pieces.set(new_pieces);
-                used_pieces.set(new_used_pieces);
-            }
-        })
+        match (*turn).player {
+            Player::Human => {
+                Callback::from(move |current_position| {
+                    position.set(current_position);
+                    let squares = board.get_squares();
+                    let tmp_board = Board{squares};
+                    if *rest_num > 0 {
+                        let (new_board, next_turn, new_pieces, new_piece, new_used_pieces) = 
+                            put_piece(current_position, *piece, tmp_board, *turn, (*pieces).clone(), (*used_pieces).clone(), game_mode_props);
+                        let current_rest_num = new_pieces.get_rest_num(new_piece.value, next_turn);
+                        rest_num.set(current_rest_num);
+                        turn.set(next_turn);
+                        board.set(new_board);
+                        piece.set(new_piece);
+                        pieces.set(new_pieces);
+                        used_pieces.set(new_used_pieces);
+                    }
+                })
+            },
+            Player::Com => {
+                Callback::from(move |_| {})
+            },
+        }
     };
 
     let decrement_props = DecrementProps {
@@ -105,7 +128,6 @@ pub fn Game(props: &GameModeProps) -> Html {
         on_increment,
     };
 
-    log::info!("{:?}", piece);
     let piece_props = PieceViewProps {
         color: (*piece).color,
         value: (*piece).value,

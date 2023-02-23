@@ -24,6 +24,8 @@
 //! * `get_score` - returns the `Score` of black and white pieces
 //! * `has_puttable` - returns a boolean indicating whether any `Square` is `Puttable`
 
+use rand::Rng;
+
 use crate::game::rule::{
     color::Color, 
     position::Position,
@@ -181,6 +183,18 @@ impl Board {
                 _ => false,
             }
         })
+    }
+
+    pub fn get_puttable_position(&self) -> Position {
+        let pos: Vec<Position> = (0..8).flat_map(|i| 
+            (0..8).map(move |j| Position{x: i, y: j})
+        ).filter(|p| match self.squares[p.x][p.y] {
+            Square::Puttable(_) => true,
+            _ => false,
+        }).collect();
+
+        let i = rand::thread_rng().gen_range(0..pos.len());
+        pos[i]
     }
 }
 

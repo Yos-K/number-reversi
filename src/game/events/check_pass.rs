@@ -1,7 +1,7 @@
-use crate::game::{
+use crate::{game::{
     rule::turn::Turn, 
     assets::{board::Board, piece::UsedPiece, pieces::Pieces}
-};
+}, app::game::GameModeProps};
 
 use super::check_puttable_position_exists::check_puttable_position_exists;
 
@@ -44,12 +44,12 @@ use super::check_puttable_position_exists::check_puttable_position_exists;
 /// 
 /// let (new_turn, new_used, new_pieces, new_board) = check_pass(turn, board, used, pieces);
 /// ```
-pub fn check_pass(turn: Turn, board: Board, used: UsedPiece, pieces: Pieces) 
+pub fn check_pass(turn: Turn, board: Board, used: UsedPiece, pieces: Pieces, game_mode_props: GameModeProps) 
 -> (Turn, UsedPiece, Pieces, Board) {
     if board.has_puttable() {
         (turn, used, pieces, board)
     } else {
-        let turn = turn.change();
+        let turn = turn.change(game_mode_props);
         let add_piece = used.get_add_piece(turn);
         let used = used.remove_piece(add_piece);
         let pieces = pieces.add(&add_piece);
@@ -67,15 +67,15 @@ mod check_pass_test {
         tests::helper::board_helper::BoardHelper, 
         game::{
             rule::{turn::Turn, color::Color, position::{ReversibleCandidates, Position}}, 
-            assets::{pieces::Pieces, piece::{UsedPiece, Piece}, square::Square}
-        }
+            assets::{pieces::Pieces, piece::{UsedPiece, Piece}, square::Square, player::Player}
+        }, app::game::GameModeProps
     };
 
     use super::check_pass;
 
     #[test]
     fn when_no_puttable_square_then_pass() {
-        let turn =Turn{color: Color::Black};
+        let turn =Turn{color: Color::Black, player: Player::Human};
         let board = BoardHelper::make_board(
             vec![
                 (1, 1, 1)], 
@@ -86,8 +86,9 @@ mod check_pass_test {
         let used = UsedPiece::new();
         let used = used.add_piece(Piece::new(Color::White, 1));
 
-        let (new_turn, used, pieces, board) = check_pass(turn, board, used, pieces);
-        assert_eq!(new_turn, Turn{color: Color::White});
+        let props = GameModeProps{black: Player::Human, white: Player::Human};
+        let (new_turn, used, pieces, board) = check_pass(turn, board, used, pieces, props);
+        assert_eq!(new_turn, Turn{color: Color::White, player: Player::Human});
         assert_eq!(used.piece_set, HashSet::new());
         assert_eq!(pieces.get_rest_num(1, new_turn), 6);
         assert_eq!(board.squares[0][2], Square::Puttable(vec![

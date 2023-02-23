@@ -95,14 +95,14 @@ pub fn check_puttable_position_exists(board: Board, turn: Turn) -> Board {
 
 #[cfg(test)]
 mod check_puttable_position_exists_test {
-    use crate::game::{assets::{board::Board, square::Square, piece::Piece}, rule::{position::{Position, ReversibleCandidates}, turn::Turn, color::Color}};
+    use crate::game::{assets::{board::Board, square::Square, piece::Piece, player::Player}, rule::{position::{Position, ReversibleCandidates}, turn::Turn, color::Color}};
 
     use super::check_puttable_position_exists;
 
     #[test]
     fn when_no_exist_reversible_piece_all_way_then_the_position_is_empty() {
         let board = Board::set_initial_state();
-        let turn = Turn{color: Color::Black};
+        let turn = Turn{color: Color::Black, player: Player::Human};
         let result_board = check_puttable_position_exists(board, turn);
         assert_eq!(result_board.squares[0][0], Square::Empty);
     }
@@ -110,7 +110,7 @@ mod check_puttable_position_exists_test {
     #[test]
     fn when_exist_reversible_piece_then_the_position_is_puttable() {
         let board = Board::set_initial_state();
-        let turn = Turn{color: Color::Black};
+        let turn = Turn{color: Color::Black, player: Player::Human};
         let result_board = check_puttable_position_exists(board, turn);
         assert_eq!(result_board.squares[2][4], 
             Square::Puttable(vec![
@@ -126,7 +126,7 @@ mod check_puttable_position_exists_test {
         let board = Board::set_initial_state();
         let white = Color::White;
         let black = Color::Black;
-        let turn = Turn{color: black};
+        let turn = Turn{color: black, player: Player::Human};
         let board = board.put_piece(Position { x: 3, y: 5 }, Piece::new(white, 1));
         let board = board.put_piece(Position { x: 4, y: 5 }, Piece::new(white, 1));
         let board = board.put_piece(Position { x: 5, y: 4 }, Piece::new(black, 3));
