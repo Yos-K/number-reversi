@@ -38,6 +38,9 @@ pub fn Game(props: &GameModeProps) -> Html {
     let score = board.get_score();
 
     if (*turn).player == Player::Com{
+        if (*props).black == Player::Com && (*props).white == Player::Com {
+            // TODO: wait until put on a piece
+        }
         log::info!("com's turn");
         let pos = board.get_puttable_position();
         let selected_piece = pieces.select_piece(*turn);
@@ -54,6 +57,8 @@ pub fn Game(props: &GameModeProps) -> Html {
         piece.set(new_piece);
         pieces.set(new_pieces);
         used_pieces.set(new_used_pieces);
+        log::info!("{:?}", selected_piece);
+        log::info!("{:?}", pos);
     };
 
     let on_decrement = {
