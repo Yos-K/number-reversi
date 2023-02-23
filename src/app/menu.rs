@@ -110,6 +110,8 @@ pub fn menu_page() -> Html {
                     </fieldset>
                 </form>
                 <button onclick={game_start}>{"Game Start!"}</button>
+                <div>{"Bug Info: You cannot start Com vs Com."}</div>
+                <div>{"バグ情報: 現在 Com vs Com で遊ぶことはできません"}</div>
             </>
         }
     }
