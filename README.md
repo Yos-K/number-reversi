@@ -1,4 +1,4 @@
-[日本語はこちら](https://github.com/Yos-K/number-reversi)
+[日本語はこちら](https://github.com/Yos-K/number-reversi/blob/main/README-ja.md)
 
 ## You can play it from the following link.
 https://yos-k.github.io/number-reversi/
