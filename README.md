@@ -1,4 +1,8 @@
 [日本語はこちら](https://github.com/Yos-K/number-reversi)
+
+## You can play it from the following link.
+https://yos-k.github.io/number-reversi/
+
 ## How to play
 The rules are generally the same as in Reversi.
 Black moves first, and you can place a piece by selecting the desired piece and then clicking on an available space (which will be indicated in yellow).
