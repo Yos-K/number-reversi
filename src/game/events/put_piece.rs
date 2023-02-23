@@ -1,4 +1,4 @@
-use crate::game::{rule::position::Position, assets::{piece::{Piece, UsedPiece}, board::Board, pieces::Pieces}};
+use crate::{game::{rule::position::Position, assets::{piece::{Piece, UsedPiece}, board::Board, pieces::Pieces}}, app::game::GameModeProps};
 use crate::game::rule::turn::Turn;
 use crate::game::assets::square::Square;
 
@@ -47,8 +47,9 @@ pub fn put_piece(
     board: Board, 
     turn: Turn, 
     pieces: Pieces, 
-    used: UsedPiece)
- -> (Board, Turn, Pieces, Piece, UsedPiece) {
+    used: UsedPiece,
+    game_mode_props: GameModeProps,
+) -> (Board, Turn, Pieces, Piece, UsedPiece) {
     match &board.squares[position.x][position.y] {
         Square::Puttable(c) => {
             let board = board.put_piece(position, piece);
@@ -58,10 +59,10 @@ pub fn put_piece(
             let pieces = pieces.remove(&piece);
             let used = used.add_piece(piece);
 
-            let turn = turn.change();
+            let turn = turn.change(game_mode_props);
             let board = check_puttable_position_exists(board, turn);
 
-            let (turn, used, pieces, board) = check_pass(turn, board, used, pieces);
+            let (turn, used, pieces, board) = check_pass(turn, board, used, pieces, game_mode_props);
             (board, turn, pieces, Piece::new(turn.color.clone(), 1), used)
         },
         _ => (
@@ -73,10 +74,10 @@ pub fn put_piece(
 #[cfg(test)]
 mod tests {
     use crate::{game::{
-        assets::{board::Board, pieces::Pieces, piece::{Piece, UsedPiece}},
+        assets::{board::Board, pieces::Pieces, piece::{Piece, UsedPiece}, player::Player},
         rule::{position::{Position, ReversibleCandidates}, color::Color},
         rule::turn::Turn, events::check_puttable_position_exists::check_puttable_position_exists,
-    }, tests::helper::board_helper::BoardHelper};
+    }, tests::helper::board_helper::BoardHelper, app::game::GameModeProps};
     use crate::game::assets::square::Square;
     use crate::game::events::put_piece::put_piece;
 
@@ -86,14 +87,16 @@ mod tests {
         let used = UsedPiece::new();
 
         let board = Board::set_initial_state();
-        let turn = Turn{color: Color::Black};
+        let props = GameModeProps{black: Player::Human, white: Player::Human};
+        let turn = Turn{color: Color::Black, player: Player::Human};
         let piece = Piece::new(turn.color.clone(), 1);
-        let position = Position { x: 4, y: 2 };
+        let position = Position{ x: 4, y: 2 };
+
 
         let board = check_puttable_position_exists(board, turn);
 
         let (new_board, new_turn, new_pieces, new_piece, new_used) = 
-            put_piece(position, piece, board, turn, pieces, used);
+            put_piece(position, piece, board, turn, pieces, used, props);
 
         assert_eq!(
             new_board.squares[position.x][position.y], 
@@ -111,14 +114,16 @@ mod tests {
         );
         let pieces = Pieces::make_pieces();
         let used = UsedPiece::new();
-        let turn = Turn{color: Color::Black};
+        let turn = Turn{color: Color::Black, player: Player::Human};
 
         let board = check_puttable_position_exists(board, turn);
         let piece = Piece::new(turn.color.clone(), 1);
         let position = Position { x: 2, y: 0 };
 
+        let props = GameModeProps{black: Player::Human, white: Player::Human};
+
         let (new_board, new_turn, new_pieces, new_piece, new_used) = 
-            put_piece(position, piece, board, turn, pieces, used);
+            put_piece(position, piece, board, turn, pieces, used, props);
 
         assert_eq!(new_turn, turn);
         assert_eq!(new_board.squares[0][2], Square::Puttable(vec![

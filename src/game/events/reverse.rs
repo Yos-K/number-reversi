@@ -37,13 +37,13 @@ pub fn reverse(board: Board, piece: Piece, candidates: Vec<ReversibleCandidates>
 
 #[cfg(test)]
 mod reverse_test {
-    use crate::game::{assets::{board::Board, piece::Piece, square::Square}, events::check_puttable_position_exists::check_puttable_position_exists, rule::{turn::Turn, color::Color, position::{Position, ReversibleCandidates}}};
+    use crate::game::{assets::{board::Board, piece::Piece, square::Square, player::Player}, events::check_puttable_position_exists::check_puttable_position_exists, rule::{turn::Turn, color::Color, position::{Position, ReversibleCandidates}}};
 
     use super::reverse;
 
     #[test]
     fn test() {
-        let turn = Turn{color: Color::Black};
+        let turn = Turn{color: Color::Black, player: Player::Human};
         let board = check_puttable_position_exists(Board::set_initial_state(), turn);
         let position = Position{x: 4, y: 2};
         let piece = Piece::new(Color::Black, 1);

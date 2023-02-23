@@ -1,3 +1,4 @@
+use rand::Rng;
 use std::collections::HashMap;
 
 use crate::game::rule::{color::Color, turn::Turn};
@@ -129,6 +130,19 @@ impl Pieces {
             Color::Black => *self.black.get(&piece_value).unwrap(),
             Color::White => *self.white.get(&piece_value).unwrap(),
         }
+    }
+
+    pub fn select_piece(&self, turn: Turn) -> Piece {
+        let pieces = match turn.color {
+            Color::Black => self.black.clone(),
+            Color::White => self.white.clone(),
+        };
+        let pieces: Vec<(&u8, &u8)> = pieces.iter()
+            .filter(|v| v.1 > &0)
+            .collect();
+        let i = rand::thread_rng().gen_range(0..pieces.len());
+        let value = *(pieces[i].0);
+        Piece { color: turn.color, value }
     }
 }
 

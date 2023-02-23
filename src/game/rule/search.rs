@@ -125,7 +125,7 @@ mod board_test {
         use crate::game::{
             assets::{
                 board::Board, 
-                piece::Piece
+                piece::Piece, player::Player
             }, 
             rule::{
                 position::{
@@ -146,7 +146,7 @@ mod board_test {
         fn when_next_piece_is_same_colors_then_return_empty_vec() {
             let board = Board::set_initial_state();
             let position = Position {x: 2, y: 3};
-            let turn = Turn{color: Color::Black};
+            let turn = Turn{color: Color::Black, player: Player::Human};
             let result = search_right(
                 &board,
                 position,
@@ -158,7 +158,7 @@ mod board_test {
         fn when_next_piece_is_different_color_then_search_next_up(){
             let board = Board::set_initial_state();
             let position = Position {x: 3, y: 5};
-            let turn = Turn{color: Color::Black};
+            let turn = Turn{color: Color::Black, player: Player::Human};
             let result = search_up(
                 &board,
                 position,
@@ -171,7 +171,7 @@ mod board_test {
             let board = Board::set_initial_state();
             let board = board.put_piece(Position {x: 3, y: 5}, Piece::new(Color::White, 1));
             let position = Position {x: 2, y: 6};
-            let turn = Turn{color: Color::Black};
+            let turn = Turn{color: Color::Black, player: Player::Human};
             let result = search_up_right(
                 &board,
                 position,

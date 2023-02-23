@@ -80,7 +80,6 @@ impl Component for PieceView {
     }
 
     fn update(&mut self, _ctx: &Context<Self>, _msg: Self::Message) -> bool {
-        log::info!("update");
         true
     }
 
